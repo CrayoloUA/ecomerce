@@ -1,18 +1,11 @@
 package co.edu.usbcali.ecommerceusb.controller;
 
-
 import co.edu.usbcali.ecommerceusb.dto.DocumentTypeResponse;
-import co.edu.usbcali.ecommerceusb.mapper.DocumentTypeMapper;
-import co.edu.usbcali.ecommerceusb.model.DocumentType;
-import co.edu.usbcali.ecommerceusb.repository.DocumentTypeRepository;
+import co.edu.usbcali.ecommerceusb.service.DocumentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -20,31 +13,18 @@ import java.util.List;
 public class DocumentTypeController {
 
     @Autowired
-    private DocumentTypeRepository documentTypeRepository;
+    private DocumentTypeService documentTypeService;
 
     @GetMapping("/all")
     public List<DocumentTypeResponse> getAll() {
-        //invocar para convertir la losta de cocumenttype a una lista de codumenttyperesponse
-        return DocumentTypeMapper.modelToDocumentTypeResponseList(
-                documentTypeRepository.findAll()
-        );
-
+        return documentTypeService.getDocumentTypes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DocumentTypeResponse> getById(@PathVariable Integer id){
-        //consultar el document type a la base de datos
-        DocumentType documentType = documentTypeRepository.getReferenceById(id);
-
-        //Mapear o convertir al dto (response) DocumentType
-        //Invocando al mapper oara coinvertir el document type
-        DocumentTypeResponse documentTypeResponse =
-                DocumentTypeMapper.modelToDocumentTypeResponse(documentType);
-
+    public ResponseEntity<DocumentTypeResponse> getById(@PathVariable Integer id) throws Exception {
         return new ResponseEntity<>(
-                documentTypeResponse,
+                documentTypeService.getDocumentTypeById(id),
                 HttpStatus.OK
         );
     }
-
 }
