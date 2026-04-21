@@ -34,6 +34,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserByEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new Exception("Debe ingresar email");
+
+        }
+
+        User userByEmail = userRepository.findByEmail(email)
+                .orElseThrow((() ->
+                        new Exception(
+                                String.format("Usuario no encontrado con el email: %s", email)));
+                return UserMapper.modelToUserResponse(userByEmail);
+                        )
         return null;
     }
 }
