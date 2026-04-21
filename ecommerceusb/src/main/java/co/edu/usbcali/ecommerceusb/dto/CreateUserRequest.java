@@ -9,7 +9,7 @@ public class CreateUserRequest {
     private String fullName;
     private String phone;
     private String email;
-    private String documentTypeId;
+    private Integer documentTypeId;
     private String documentNumber;
     private String birthDate;
     private String country;
