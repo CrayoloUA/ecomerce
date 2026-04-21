@@ -1,4 +1,5 @@
 package co.edu.usbcali.ecommerceusb.service.impl;
+
 import co.edu.usbcali.ecommerceusb.dto.UserResponse;
 import co.edu.usbcali.ecommerceusb.mapper.UserMapper;
 import co.edu.usbcali.ecommerceusb.model.User;
@@ -15,36 +16,40 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public List<UserResponse> getUsers() {
-        List<User> users = userRepository.findAll(); // ← agregado
+        List<User> users = userRepository.findAll();
 
         if (users.isEmpty()) {
             return List.of();
         }
 
-        List<UserResponse> userResponses = UserMapper.modelToUserResponse(users);
-        return userResponses;
+        return UserMapper.modelToUserResponse(users);
     }
+
     @Override
     public UserResponse getUserById(Integer id) {
-        return null;
+        if (id == null || id <= 0) {
+            throw new RuntimeException("Debe ingresar un id válido para buscar");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("Usuario no encontrado con el id: %d", id)));
+
+        return UserMapper.modelToUserResponse(user);
     }
 
     @Override
     public UserResponse getUserByEmail(String email) {
         if (email == null || email.isBlank()) {
-            throw new Exception("Debe ingresar email");
-
+            throw new RuntimeException("Debe ingresar email");
         }
 
         User userByEmail = userRepository.findByEmail(email)
-                .orElseThrow((() ->
-                        new Exception(
-                                String.format("Usuario no encontrado con el email: %s", email)));
-                return UserMapper.modelToUserResponse(userByEmail);
-                        )
-        return null;
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("Usuario no encontrado con el email: %s", email)));
+
+        return UserMapper.modelToUserResponse(userByEmail);
     }
 }
