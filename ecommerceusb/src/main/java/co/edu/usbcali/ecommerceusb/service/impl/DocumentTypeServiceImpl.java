@@ -25,11 +25,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Override
     public DocumentTypeResponse getDocumentTypeById(Integer id) throws Exception {
         if (id == null || id <= 0) {
-            throw new Exception("Debe ingresar un id válido para buscar");
+            throw new Exception("ingresar un id válido para buscar");
         }
         DocumentType documentType = documentTypeRepository.findById(id)
                 .orElseThrow(() -> new Exception(
-                        String.format("Tipo de documento no encontrado con el id: %d", id)));
+                        String.format("documento no encontrado: %d", id)));
         return DocumentTypeMapper.modelToDocumentTypeResponse(documentType);
     }
 }

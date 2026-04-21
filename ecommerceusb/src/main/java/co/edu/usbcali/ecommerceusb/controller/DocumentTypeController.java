@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/document-type")
-public class DocumentTypeController {
+public class    DocumentTypeController {
 
     @Autowired
     private DocumentTypeService documentTypeService;
