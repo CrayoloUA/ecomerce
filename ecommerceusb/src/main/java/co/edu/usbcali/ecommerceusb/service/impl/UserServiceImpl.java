@@ -119,11 +119,8 @@ public class UserServiceImpl implements UserService {
                 .birthDate(LocalDate.parse(createUserRequest.getBirthDate()))
                 .country(createUserRequest.getCountry())
                 .address(createUserRequest.getAddress())
-                .createdAt(OffsetDateTime.now())
-                .updatedAt(OffsetDateTime.now())
                 .build();
 
-        User savedUser = userRepository.save(user);
-        return UserMapper.modelToUserResponse(savedUser);
+        return null;
     }
 }
