@@ -111,16 +111,7 @@
                     createUserRequest.getDocumentNumber(), createUserRequest.getDocumentTypeId())){
                 throw new Exception("El documentType ya existe");
             }
-            User user = User.builder()
-                    .fullName(createUserRequest.getFullName())
-                    .phone(createUserRequest.getPhone())
-                    .email(createUserRequest.getEmail())
-                    .documentType(documentType)
-                    .documentNumber(createUserRequest.getDocumentNumber())
-                    .birthDate(LocalDate.parse(createUserRequest.getBirthDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .country(createUserRequest.getCountry())
-                    .address(createUserRequest.getAddress())
-                    .build();
+          User user = UserMapper.createUserRequestToUser(createUserRequest, documentType);
 
             User savedUser = userRepository.save(user);
             UserResponse userResponse = UserMapper.modelToUserResponse(savedUser);
