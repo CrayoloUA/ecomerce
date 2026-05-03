@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import java.math.BigDecimal;
 public class CreateOrderItemRequest {
     private Integer orderId;
     private Integer productId;
-    private Integer quantity;
-    private BigDecimal unitPriceSnapshot;
-    private BigDecimal lineTotal;
+    private Integer qty;
+    private BigDecimal unitPrice;
 }

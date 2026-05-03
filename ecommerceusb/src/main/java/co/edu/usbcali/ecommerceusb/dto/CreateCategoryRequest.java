@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -11,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateCategoryRequest {
     private String name;
-    private Integer parentId;
+    private String description;
 }

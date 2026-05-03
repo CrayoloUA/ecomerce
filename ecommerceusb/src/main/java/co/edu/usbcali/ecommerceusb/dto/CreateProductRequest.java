@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,5 @@ public class CreateProductRequest {
     private String name;
     private String description;
     private BigDecimal price;
-    private Boolean available;
+    private String imageUrl;
 }

@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -16,9 +17,6 @@ public class OrderResponse {
     private Integer id;
     private Integer userId;
     private String status;
-    private BigDecimal totalAmount;
-    private String currency;
+    private BigDecimal total;
     private OffsetDateTime createdAt;
-    private OffsetDateTime paidAt;
-    private OffsetDateTime cancelledAt;
 }

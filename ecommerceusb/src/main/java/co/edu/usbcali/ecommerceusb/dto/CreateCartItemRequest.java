@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class CreateCartItemRequest {
     private Integer cartId;
     private Integer productId;
-    private Integer quantity;
+    private Integer qty;
 }

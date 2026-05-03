@@ -1,11 +1,10 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -14,6 +13,5 @@ import java.time.OffsetDateTime;
 public class CategoryResponse {
     private Integer id;
     private String name;
-    private Integer parentId;
-    private OffsetDateTime createdAt;
+    private String description;
 }

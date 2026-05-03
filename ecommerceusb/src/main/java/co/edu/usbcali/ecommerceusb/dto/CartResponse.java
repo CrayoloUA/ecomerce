@@ -1,3 +1,4 @@
+// tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,5 @@ import java.time.OffsetDateTime;
 public class CartResponse {
     private Integer id;
     private Integer userId;
-    private String status;
     private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 }
