@@ -1,20 +1,13 @@
 // tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.math.BigDecimal;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class CreateProductRequest {
     private String name;
     private String description;
     private BigDecimal price;
-    private String imageUrl;
+    private Boolean available;
 }

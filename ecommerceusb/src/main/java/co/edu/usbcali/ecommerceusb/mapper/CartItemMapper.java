@@ -7,6 +7,7 @@ import co.edu.usbcali.ecommerceusb.model.Cart;
 import co.edu.usbcali.ecommerceusb.model.CartItem;
 import co.edu.usbcali.ecommerceusb.model.Product;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,9 @@ public class CartItemMapper {
                 .id(cartItem.getId())
                 .cartId(cartItem.getCart() != null ? cartItem.getCart().getId() : null)
                 .productId(cartItem.getProduct() != null ? cartItem.getProduct().getId() : null)
-                .qty(cartItem.getQty())
+                .quantity(cartItem.getQuantity())
+                .createdAt(cartItem.getCreatedAt())
+                .updatedAt(cartItem.getUpdatedAt())
                 .build();
     }
 
@@ -31,7 +34,9 @@ public class CartItemMapper {
         return CartItem.builder()
                 .cart(cart)
                 .product(product)
-                .qty(request.getQty())
+                .quantity(request.getQuantity())
+                .createdAt(OffsetDateTime.now())
+                .updatedAt(OffsetDateTime.now())
                 .build();
     }
 }

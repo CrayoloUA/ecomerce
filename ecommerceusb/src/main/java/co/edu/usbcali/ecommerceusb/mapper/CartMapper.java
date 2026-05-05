@@ -16,7 +16,9 @@ public class CartMapper {
         return CartResponse.builder()
                 .id(cart.getId())
                 .userId(cart.getUser() != null ? cart.getUser().getId() : null)
+                .status(cart.getStatus() != null ? cart.getStatus().name() : null)
                 .createdAt(cart.getCreatedAt())
+                .updatedAt(cart.getUpdatedAt())
                 .build();
     }
 
@@ -29,7 +31,9 @@ public class CartMapper {
     public static Cart createCartRequestToCart(CreateCartRequest request, User user) {
         return Cart.builder()
                 .user(user)
+                .status(Cart.CartStatus.valueOf(request.getStatus()))
                 .createdAt(OffsetDateTime.now())
+                .updatedAt(OffsetDateTime.now())
                 .build();
     }
 }

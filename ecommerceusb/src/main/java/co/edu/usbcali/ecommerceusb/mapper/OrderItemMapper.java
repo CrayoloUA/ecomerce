@@ -7,6 +7,7 @@ import co.edu.usbcali.ecommerceusb.model.Order;
 import co.edu.usbcali.ecommerceusb.model.OrderItem;
 import co.edu.usbcali.ecommerceusb.model.Product;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +18,10 @@ public class OrderItemMapper {
                 .id(orderItem.getId())
                 .orderId(orderItem.getOrder() != null ? orderItem.getOrder().getId() : null)
                 .productId(orderItem.getProduct() != null ? orderItem.getProduct().getId() : null)
-                .qty(orderItem.getQty())
-                .unitPrice(orderItem.getUnitPrice())
+                .quantity(orderItem.getQuantity())
+                .unitPriceSnapshot(orderItem.getUnitPriceSnapshot())
+                .lineTotal(orderItem.getLineTotal())
+                .createdAt(orderItem.getCreatedAt())
                 .build();
     }
 
@@ -32,8 +35,10 @@ public class OrderItemMapper {
         return OrderItem.builder()
                 .order(order)
                 .product(product)
-                .qty(request.getQty())
-                .unitPrice(request.getUnitPrice())
+                .quantity(request.getQuantity())
+                .unitPriceSnapshot(request.getUnitPriceSnapshot())
+                .lineTotal(request.getLineTotal())
+                .createdAt(OffsetDateTime.now())
                 .build();
     }
 }

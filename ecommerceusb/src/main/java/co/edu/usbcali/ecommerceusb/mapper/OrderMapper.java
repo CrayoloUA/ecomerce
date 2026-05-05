@@ -17,7 +17,8 @@ public class OrderMapper {
                 .id(order.getId())
                 .userId(order.getUser() != null ? order.getUser().getId() : null)
                 .status(order.getStatus() != null ? order.getStatus().name() : null)
-                .total(order.getTotal())
+                .totalAmount(order.getTotalAmount())
+                .currency(order.getCurrency())
                 .createdAt(order.getCreatedAt())
                 .build();
     }
@@ -32,7 +33,8 @@ public class OrderMapper {
         return Order.builder()
                 .user(user)
                 .status(Order.OrderStatus.valueOf(request.getStatus()))
-                .total(request.getTotal())
+                .totalAmount(request.getTotalAmount())
+                .currency(request.getCurrency())
                 .createdAt(OffsetDateTime.now())
                 .build();
     }

@@ -1,17 +1,13 @@
 // tarea
 package co.edu.usbcali.ecommerceusb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import java.time.OffsetDateTime;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class CategoryResponse {
     private Integer id;
     private String name;
-    private String description;
+    private Integer parentId;
+    private OffsetDateTime createdAt;
 }
