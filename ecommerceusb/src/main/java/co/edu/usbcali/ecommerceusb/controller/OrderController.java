@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.controller;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateOrderRequest;
 import co.edu.usbcali.ecommerceusb.dto.OrderResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateOrderRequest;
 import co.edu.usbcali.ecommerceusb.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,5 +31,10 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request) throws Exception {
         return new ResponseEntity<>(orderService.createOrder(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResponse> updateOrder(@PathVariable Integer id, @RequestBody UpdateOrderRequest request) throws Exception {
+        return new ResponseEntity<>(orderService.updateOrder(id, request), HttpStatus.OK);
     }
 }

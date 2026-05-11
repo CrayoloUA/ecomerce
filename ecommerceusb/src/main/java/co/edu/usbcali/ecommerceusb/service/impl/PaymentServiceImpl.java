@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreatePaymentRequest;
 import co.edu.usbcali.ecommerceusb.dto.PaymentResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdatePaymentRequest;
 import co.edu.usbcali.ecommerceusb.mapper.PaymentMapper;
 import co.edu.usbcali.ecommerceusb.model.Order;
 import co.edu.usbcali.ecommerceusb.model.Payment;
@@ -49,7 +49,19 @@ public class PaymentServiceImpl implements PaymentService {
             throw new Exception("El campo idempotencyKey no puede ser nulo.");
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
-        Payment payment = PaymentMapper.createPaymentRequestToPayment(request, order);
+        return PaymentMapper.modelToPaymentResponse(paymentRepository.save(PaymentMapper.createPaymentRequestToPayment(request, order)));
+    }
+
+    @Override
+    public PaymentResponse updatePayment(Integer id, UpdatePaymentRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updatePaymentRequest no puede ser nulo.");
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("Payment no encontrado con el id: %d", id)));
+        if (!Objects.isNull(request.getStatus()) && !request.getStatus().isBlank())
+            payment.setStatus(Payment.PaymentStatus.valueOf(request.getStatus()));
+        if (!Objects.isNull(request.getProviderRef()) && !request.getProviderRef().isBlank())
+            payment.setProviderRef(request.getProviderRef());
         return PaymentMapper.modelToPaymentResponse(paymentRepository.save(payment));
     }
 }

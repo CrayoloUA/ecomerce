@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.controller;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateInventoryRequest;
 import co.edu.usbcali.ecommerceusb.dto.InventoryResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateInventoryRequest;
 import co.edu.usbcali.ecommerceusb.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,5 +31,10 @@ public class InventoryController {
     @PostMapping
     public ResponseEntity<InventoryResponse> createInventory(@RequestBody CreateInventoryRequest request) throws Exception {
         return new ResponseEntity<>(inventoryService.createInventory(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<InventoryResponse> updateInventory(@PathVariable Integer id, @RequestBody UpdateInventoryRequest request) throws Exception {
+        return new ResponseEntity<>(inventoryService.updateInventory(id, request), HttpStatus.OK);
     }
 }

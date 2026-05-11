@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CategoryResponse;
 import co.edu.usbcali.ecommerceusb.dto.CreateCategoryRequest;
+import co.edu.usbcali.ecommerceusb.dto.UpdateCategoryRequest;
 import co.edu.usbcali.ecommerceusb.mapper.CategoryMapper;
 import co.edu.usbcali.ecommerceusb.model.Category;
 import co.edu.usbcali.ecommerceusb.repository.CategoryRepository;
@@ -40,6 +40,22 @@ public class CategoryServiceImpl implements CategoryService {
         if (Objects.isNull(request.getName()) || request.getName().isBlank())
             throw new Exception("El campo name no puede ser nulo.");
         Category category = CategoryMapper.createCategoryRequestToCategory(request);
+        if (request.getParentId() != null) {
+            Category parent = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new Exception("Categoría padre no encontrada con id: " + request.getParentId()));
+            category.setParent(parent);
+        }
+        return CategoryMapper.modelToCategoryResponse(categoryRepository.save(category));
+    }
+
+    @Override
+    public CategoryResponse updateCategory(Integer id, UpdateCategoryRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updateCategoryRequest no puede ser nulo.");
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("Categoría no encontrada con el id: %d", id)));
+        if (!Objects.isNull(request.getName()) && !request.getName().isBlank())
+            category.setName(request.getName());
         if (request.getParentId() != null) {
             Category parent = categoryRepository.findById(request.getParentId())
                     .orElseThrow(() -> new Exception("Categoría padre no encontrada con id: " + request.getParentId()));

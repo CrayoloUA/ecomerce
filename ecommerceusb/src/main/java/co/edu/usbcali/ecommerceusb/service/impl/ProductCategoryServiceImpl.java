@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateProductCategoryRequest;
 import co.edu.usbcali.ecommerceusb.dto.ProductCategoryResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateProductCategoryRequest;
 import co.edu.usbcali.ecommerceusb.mapper.ProductCategoryMapper;
 import co.edu.usbcali.ecommerceusb.model.Category;
 import co.edu.usbcali.ecommerceusb.model.Product;
@@ -53,7 +53,25 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new Exception("Categoría no encontrada con id: " + request.getCategoryId()));
-        ProductCategory pc = ProductCategoryMapper.createProductCategoryRequestToProductCategory(request, product, category);
+        return ProductCategoryMapper.modelToProductCategoryResponse(productCategoryRepository.save(ProductCategoryMapper.createProductCategoryRequestToProductCategory(request, product, category)));
+    }
+
+    @Override
+    public ProductCategoryResponse updateProductCategory(Integer id, UpdateProductCategoryRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updateProductCategoryRequest no puede ser nulo.");
+        ProductCategory pc = productCategoryRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("ProductCategory no encontrado con el id: %d", id)));
+        if (request.getProductId() != null && request.getProductId() > 0) {
+            Product product = productRepository.findById(request.getProductId())
+                    .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
+            pc.setProduct(product);
+        }
+        if (request.getCategoryId() != null && request.getCategoryId() > 0) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new Exception("Categoría no encontrada con id: " + request.getCategoryId()));
+            pc.setCategory(category);
+        }
         return ProductCategoryMapper.modelToProductCategoryResponse(productCategoryRepository.save(pc));
     }
 }

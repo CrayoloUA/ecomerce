@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateOrderItemRequest;
 import co.edu.usbcali.ecommerceusb.dto.OrderItemResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateOrderItemRequest;
 import co.edu.usbcali.ecommerceusb.mapper.OrderItemMapper;
 import co.edu.usbcali.ecommerceusb.model.Order;
 import co.edu.usbcali.ecommerceusb.model.OrderItem;
@@ -55,7 +55,21 @@ public class OrderItemServiceImpl implements OrderItemService {
                 .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
-        OrderItem item = OrderItemMapper.createOrderItemRequestToOrderItem(request, order, product);
+        return OrderItemMapper.modelToOrderItemResponse(orderItemRepository.save(OrderItemMapper.createOrderItemRequestToOrderItem(request, order, product)));
+    }
+
+    @Override
+    public OrderItemResponse updateOrderItem(Integer id, UpdateOrderItemRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updateOrderItemRequest no puede ser nulo.");
+        OrderItem item = orderItemRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("OrderItem no encontrado con el id: %d", id)));
+        if (!Objects.isNull(request.getQuantity()) && request.getQuantity() > 0)
+            item.setQuantity(request.getQuantity());
+        if (!Objects.isNull(request.getUnitPriceSnapshot()))
+            item.setUnitPriceSnapshot(request.getUnitPriceSnapshot());
+        if (!Objects.isNull(request.getLineTotal()))
+            item.setLineTotal(request.getLineTotal());
         return OrderItemMapper.modelToOrderItemResponse(orderItemRepository.save(item));
     }
 }

@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateInventoryMovementRequest;
 import co.edu.usbcali.ecommerceusb.dto.InventoryMovementResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateInventoryMovementRequest;
 import co.edu.usbcali.ecommerceusb.mapper.InventoryMovementMapper;
 import co.edu.usbcali.ecommerceusb.model.InventoryMovement;
 import co.edu.usbcali.ecommerceusb.model.Order;
@@ -58,7 +58,19 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
             order = orderRepository.findById(request.getOrderId())
                     .orElseThrow(() -> new Exception("Order no encontrada con id: " + request.getOrderId()));
         }
-        InventoryMovement movement = InventoryMovementMapper.createInventoryMovementRequestToInventoryMovement(request, product, order);
+        return InventoryMovementMapper.modelToInventoryMovementResponse(inventoryMovementRepository.save(InventoryMovementMapper.createInventoryMovementRequestToInventoryMovement(request, product, order)));
+    }
+
+    @Override
+    public InventoryMovementResponse updateInventoryMovement(Integer id, UpdateInventoryMovementRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updateInventoryMovementRequest no puede ser nulo.");
+        InventoryMovement movement = inventoryMovementRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("InventoryMovement no encontrado con el id: %d", id)));
+        if (!Objects.isNull(request.getType()) && !request.getType().isBlank())
+            movement.setType(InventoryMovement.MovementType.valueOf(request.getType()));
+        if (!Objects.isNull(request.getQty()) && request.getQty() > 0)
+            movement.setQty(request.getQty());
         return InventoryMovementMapper.modelToInventoryMovementResponse(inventoryMovementRepository.save(movement));
     }
 }

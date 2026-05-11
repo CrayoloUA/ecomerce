@@ -1,8 +1,8 @@
-// tarea
 package co.edu.usbcali.ecommerceusb.service.impl;
 
 import co.edu.usbcali.ecommerceusb.dto.CreateOrderRequest;
 import co.edu.usbcali.ecommerceusb.dto.OrderResponse;
+import co.edu.usbcali.ecommerceusb.dto.UpdateOrderRequest;
 import co.edu.usbcali.ecommerceusb.mapper.OrderMapper;
 import co.edu.usbcali.ecommerceusb.model.Order;
 import co.edu.usbcali.ecommerceusb.model.User;
@@ -50,7 +50,21 @@ public class OrderServiceImpl implements OrderService {
             throw new Exception("El campo currency no puede ser nulo.");
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + request.getUserId()));
-        Order order = OrderMapper.createOrderRequestToOrder(request, user);
+        return OrderMapper.modelToOrderResponse(orderRepository.save(OrderMapper.createOrderRequestToOrder(request, user)));
+    }
+
+    @Override
+    public OrderResponse updateOrder(Integer id, UpdateOrderRequest request) throws Exception {
+        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
+        if (Objects.isNull(request)) throw new Exception("El objeto updateOrderRequest no puede ser nulo.");
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new Exception(String.format("Order no encontrada con el id: %d", id)));
+        if (!Objects.isNull(request.getStatus()) && !request.getStatus().isBlank())
+            order.setStatus(Order.OrderStatus.valueOf(request.getStatus()));
+        if (!Objects.isNull(request.getTotalAmount()))
+            order.setTotalAmount(request.getTotalAmount());
+        if (!Objects.isNull(request.getCurrency()) && !request.getCurrency().isBlank())
+            order.setCurrency(request.getCurrency());
         return OrderMapper.modelToOrderResponse(orderRepository.save(order));
     }
 }
