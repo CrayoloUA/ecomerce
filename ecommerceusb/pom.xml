@@ -64,7 +64,11 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<<<<<<< HEAD
 
+=======
+		<!-- Swagger / OpenAPI -->
+>>>>>>> fa167ad8ac8c2642697792a3e274ca829b716e48
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
