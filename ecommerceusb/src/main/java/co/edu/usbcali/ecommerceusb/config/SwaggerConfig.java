@@ -12,8 +12,8 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Ecommerce USB API")
+                        .title("Ecommerce")
                         .version("1.0")
-                        .description("API REST del proyecto ecommerce - USB Cali"));
+                        .description("ecommerce"));
     }
 }
