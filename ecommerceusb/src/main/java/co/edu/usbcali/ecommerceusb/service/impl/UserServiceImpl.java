@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,73 +35,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserById(Integer id) {
-        if (id == null || id <= 0) throw new RuntimeException("Debe ingresar un id válido para buscar");
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Usuario no encontrado con el id: %d", id)));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el id: " + id));
         return UserMapper.modelToUserResponse(user);
     }
 
     @Override
     public UserResponse getUserByEmail(String email) {
-        if (email == null || email.isBlank()) throw new RuntimeException("Debe ingresar email");
-        User userByEmail = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(String.format("Usuario no encontrado con el email: %s", email)));
-        return UserMapper.modelToUserResponse(userByEmail);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el email: " + email));
+        return UserMapper.modelToUserResponse(user);
     }
 
     @Override
-    public UserResponse createUser(CreateUserRequest createUserRequest) throws Exception {
-        if (Objects.isNull(createUserRequest)) throw new Exception("El objeto createUserRequest no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getFullName()) || createUserRequest.getFullName().isBlank())
-            throw new Exception("El campo FullName no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getPhone()) || createUserRequest.getPhone().isBlank())
-            throw new Exception("El campo Phone no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getEmail()) || createUserRequest.getEmail().isBlank())
-            throw new Exception("El campo Email no puede ser nulo.");
-        if (createUserRequest.getDocumentTypeId() == null || createUserRequest.getDocumentTypeId() <= 0)
-            throw new Exception("El campo documentTypeId debe contener un numero mayor a 0.");
-        if (Objects.isNull(createUserRequest.getDocumentNumber()) || createUserRequest.getDocumentNumber().isBlank())
-            throw new Exception("El campo DocumentNumber no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getBirthDate()) || createUserRequest.getBirthDate().isBlank())
-            throw new Exception("El campo BirthDate no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getCountry()) || createUserRequest.getCountry().isBlank())
-            throw new Exception("El campo Country no puede ser nulo.");
-        if (Objects.isNull(createUserRequest.getAddress()) || createUserRequest.getAddress().isBlank())
-            throw new Exception("El campo address no puede ser nulo.");
-        DocumentType documentType = documentTypeRepository.findById(createUserRequest.getDocumentTypeId())
-                .orElseThrow(() -> new Exception("El tipo de documentType no encontrado"));
-        if (userRepository.existsByEmail(createUserRequest.getEmail()))
-            throw new Exception("El email ya existe");
-        if (userRepository.existsByDocumentNumberAndDocumentTypeId(
-                createUserRequest.getDocumentNumber(), createUserRequest.getDocumentTypeId()))
-            throw new Exception("El documentType ya existe");
-        User user = UserMapper.createUserRequestToUser(createUserRequest, documentType);
+    public UserResponse createUser(CreateUserRequest request) throws Exception {
+        DocumentType documentType = documentTypeRepository.findById(request.getDocumentTypeId())
+                .orElseThrow(() -> new Exception("DocumentType no encontrado"));
+        User user = UserMapper.createUserRequestToUser(request, documentType);
         return UserMapper.modelToUserResponse(userRepository.save(user));
     }
 
     @Override
     public UserResponse updateUser(Integer id, UpdateUserRequest request) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
-        if (Objects.isNull(request)) throw new Exception("El objeto updateUserRequest no puede ser nulo.");
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Usuario no encontrado con el id: %d", id)));
-        if (!Objects.isNull(request.getFullName()) && !request.getFullName().isBlank())
-            user.setFullName(request.getFullName());
-        if (!Objects.isNull(request.getPhone()) && !request.getPhone().isBlank())
-            user.setPhone(request.getPhone());
-        if (!Objects.isNull(request.getEmail()) && !request.getEmail().isBlank())
-            user.setEmail(request.getEmail());
-        if (!Objects.isNull(request.getDocumentNumber()) && !request.getDocumentNumber().isBlank())
-            user.setDocumentNumber(request.getDocumentNumber());
-        if (!Objects.isNull(request.getBirthDate()) && !request.getBirthDate().isBlank())
+                .orElseThrow(() -> new Exception("Usuario no encontrado con el id: " + id));
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setEmail(request.getEmail());
+        user.setDocumentNumber(request.getDocumentNumber());
+        user.setCountry(request.getCountry());
+        user.setAddress(request.getAddress());
+        if (request.getBirthDate() != null)
             user.setBirthDate(LocalDate.parse(request.getBirthDate(), DateTimeFormatter.ISO_LOCAL_DATE));
-        if (!Objects.isNull(request.getCountry()) && !request.getCountry().isBlank())
-            user.setCountry(request.getCountry());
-        if (!Objects.isNull(request.getAddress()) && !request.getAddress().isBlank())
-            user.setAddress(request.getAddress());
-        if (request.getDocumentTypeId() != null && request.getDocumentTypeId() > 0) {
+        if (request.getDocumentTypeId() != null) {
             DocumentType documentType = documentTypeRepository.findById(request.getDocumentTypeId())
-                    .orElseThrow(() -> new Exception("DocumentType no encontrado con id: " + request.getDocumentTypeId()));
+                    .orElseThrow(() -> new Exception("DocumentType no encontrado"));
             user.setDocumentType(documentType);
         }
         user.setUpdatedAt(OffsetDateTime.now());

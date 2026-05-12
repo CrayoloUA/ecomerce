@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -28,21 +27,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getCategoryById(Integer id) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Categoría no encontrada con el id: %d", id)));
+                .orElseThrow(() -> new Exception("Categoria no encontrada con el id: " + id));
         return CategoryMapper.modelToCategoryResponse(category);
     }
 
     @Override
     public CategoryResponse createCategory(CreateCategoryRequest request) throws Exception {
-        if (Objects.isNull(request)) throw new Exception("El objeto createCategoryRequest no puede ser nulo.");
-        if (Objects.isNull(request.getName()) || request.getName().isBlank())
-            throw new Exception("El campo name no puede ser nulo.");
         Category category = CategoryMapper.createCategoryRequestToCategory(request);
         if (request.getParentId() != null) {
             Category parent = categoryRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new Exception("Categoría padre no encontrada con id: " + request.getParentId()));
+                    .orElseThrow(() -> new Exception("Categoria padre no encontrada"));
             category.setParent(parent);
         }
         return CategoryMapper.modelToCategoryResponse(categoryRepository.save(category));
@@ -50,15 +45,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse updateCategory(Integer id, UpdateCategoryRequest request) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
-        if (Objects.isNull(request)) throw new Exception("El objeto updateCategoryRequest no puede ser nulo.");
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Categoría no encontrada con el id: %d", id)));
-        if (!Objects.isNull(request.getName()) && !request.getName().isBlank())
-            category.setName(request.getName());
+                .orElseThrow(() -> new Exception("Categoria no encontrada con el id: " + id));
+        category.setName(request.getName());
         if (request.getParentId() != null) {
             Category parent = categoryRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new Exception("Categoría padre no encontrada con id: " + request.getParentId()));
+                    .orElseThrow(() -> new Exception("Categoria padre no encontrada"));
             category.setParent(parent);
         }
         return CategoryMapper.modelToCategoryResponse(categoryRepository.save(category));

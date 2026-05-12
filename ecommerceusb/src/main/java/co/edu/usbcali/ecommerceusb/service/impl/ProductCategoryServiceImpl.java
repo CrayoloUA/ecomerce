@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
@@ -36,42 +35,30 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public ProductCategoryResponse getProductCategoryById(Integer id) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
         ProductCategory pc = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("ProductCategory no encontrado con el id: %d", id)));
+                .orElseThrow(() -> new Exception("ProductCategory no encontrado con el id: " + id));
         return ProductCategoryMapper.modelToProductCategoryResponse(pc);
     }
 
     @Override
     public ProductCategoryResponse createProductCategory(CreateProductCategoryRequest request) throws Exception {
-        if (Objects.isNull(request)) throw new Exception("El objeto createProductCategoryRequest no puede ser nulo.");
-        if (Objects.isNull(request.getProductId()) || request.getProductId() <= 0)
-            throw new Exception("El campo productId debe ser mayor a 0.");
-        if (Objects.isNull(request.getCategoryId()) || request.getCategoryId() <= 0)
-            throw new Exception("El campo categoryId debe ser mayor a 0.");
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new Exception("Categoría no encontrada con id: " + request.getCategoryId()));
+                .orElseThrow(() -> new Exception("Categoria no encontrada con id: " + request.getCategoryId()));
         return ProductCategoryMapper.modelToProductCategoryResponse(productCategoryRepository.save(ProductCategoryMapper.createProductCategoryRequestToProductCategory(request, product, category)));
     }
 
     @Override
     public ProductCategoryResponse updateProductCategory(Integer id, UpdateProductCategoryRequest request) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
-        if (Objects.isNull(request)) throw new Exception("El objeto updateProductCategoryRequest no puede ser nulo.");
         ProductCategory pc = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("ProductCategory no encontrado con el id: %d", id)));
-        if (request.getProductId() != null && request.getProductId() > 0) {
-            Product product = productRepository.findById(request.getProductId())
-                    .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
-            pc.setProduct(product);
-        }
-        if (request.getCategoryId() != null && request.getCategoryId() > 0) {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new Exception("Categoría no encontrada con id: " + request.getCategoryId()));
-            pc.setCategory(category);
-        }
+                .orElseThrow(() -> new Exception("ProductCategory no encontrado con el id: " + id));
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new Exception("Producto no encontrado con id: " + request.getProductId()));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new Exception("Categoria no encontrada con id: " + request.getCategoryId()));
+        pc.setProduct(product);
+        pc.setCategory(category);
         return ProductCategoryMapper.modelToProductCategoryResponse(productCategoryRepository.save(pc));
     }
 }

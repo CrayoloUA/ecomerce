@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -33,19 +32,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse getCartById(Integer id) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
         Cart cart = cartRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Cart no encontrado con el id: %d", id)));
+                .orElseThrow(() -> new Exception("Cart no encontrado con el id: " + id));
         return CartMapper.modelToCartResponse(cart);
     }
 
     @Override
     public CartResponse createCart(CreateCartRequest request) throws Exception {
-        if (Objects.isNull(request)) throw new Exception("El objeto createCartRequest no puede ser nulo.");
-        if (Objects.isNull(request.getUserId()) || request.getUserId() <= 0)
-            throw new Exception("El campo userId debe ser mayor a 0.");
-        if (Objects.isNull(request.getStatus()) || request.getStatus().isBlank())
-            throw new Exception("El campo status no puede ser nulo.");
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + request.getUserId()));
         return CartMapper.modelToCartResponse(cartRepository.save(CartMapper.createCartRequestToCart(request, user)));
@@ -53,12 +46,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse updateCart(Integer id, UpdateCartRequest request) throws Exception {
-        if (id == null || id <= 0) throw new Exception("Debe ingresar un id válido");
-        if (Objects.isNull(request)) throw new Exception("El objeto updateCartRequest no puede ser nulo.");
         Cart cart = cartRepository.findById(id)
-                .orElseThrow(() -> new Exception(String.format("Cart no encontrado con el id: %d", id)));
-        if (!Objects.isNull(request.getStatus()) && !request.getStatus().isBlank())
-            cart.setStatus(Cart.CartStatus.valueOf(request.getStatus()));
+                .orElseThrow(() -> new Exception("Cart no encontrado con el id: " + id));
+        cart.setStatus(Cart.CartStatus.valueOf(request.getStatus()));
         cart.setUpdatedAt(OffsetDateTime.now());
         return CartMapper.modelToCartResponse(cartRepository.save(cart));
     }
